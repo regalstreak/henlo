@@ -62,7 +62,11 @@ buck-out/
 yarn.lock
 package-lock.json
 
-# vscode bs
+# vscode bs and android binaries
 android/app/bin
 android/app/.project
 android/.project
+
+android/.settings/
+android/app/.classpath
+android/app/.settings/
