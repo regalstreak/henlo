@@ -1,14 +1,13 @@
 import React from 'react';
 import {
-    PermissionsAndroid,
-    View,
-    TextInput,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
+    PermissionsAndroid, View, TextInput, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 
 import Contacts from 'react-native-contacts';
+
+import Footer from '../../library/components/Footer';
+import Header from '../../library/components/Header';
+import CheckBoxSwitch from '../../library/components/CheckBoxSwitch';
 
 export default class Main extends React.Component {
 
@@ -17,6 +16,7 @@ export default class Main extends React.Component {
         this.state = {
             contacts: null,
             contactNumbers: '',
+            contactOption: 'single',
         };
     }
 
@@ -31,14 +31,14 @@ export default class Main extends React.Component {
                 message: 'This app wanna view yer contacts',
             }
         ).then(() => {
-            // Contacts.getAll((err, contacts) => {
-            //     if (err === "denied") {
-            //         // error
-            //     } else {
-            //         console.log(contacts);
-            //         this.setState({ contacts });
-            //     }
-            // });
+            /* Contacts.getAll((err, contacts) => {
+                 if (err === "denied") {
+                     // error
+                 } else {
+                     console.log(contacts);
+                     this.setState({ contacts });
+                 }
+             }); */
         });
         PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS, {
@@ -55,83 +55,87 @@ export default class Main extends React.Component {
 
     _addContactsPressed = () => {
         let ourContactNumbers = this.state.contactNumbers.split('\n');
+        let newPerson;
 
-
-        ourContactNumbers.forEach((currentNumber, index) => {
-            let newPerson = {
+        if (this.state.contactOption === 'single') {
+            newPerson = {
                 note: 'henloContact',
-                phoneNumbers: [{
+                givenName: 'aaaa_' + 'contact',
+                phoneNumbers: [],
+            };
+            ourContactNumbers.forEach((currentNumber, index) => {
+                newPerson.phoneNumbers.push({
                     label: 'mobile',
                     number: currentNumber,
-                }],
-                givenName: 'aaaa_' + index + '_contact',
-            };
+                });
+            });
 
             Contacts.addContact(newPerson, (err) => {
                 if (err) { throw err; }
             });
-        });
+
+        } else if (this.state.contactOption === 'multiple') {
+            ourContactNumbers.forEach((currentNumber, index) => {
+                newPerson = {
+                    note: 'henloContact',
+                    phoneNumbers: [{
+                        label: 'mobile',
+                        number: currentNumber,
+                    }],
+                    givenName: 'aaaa_' + index + '_contact',
+                };
+
+                Contacts.addContact(newPerson, (err) => {
+                    if (err) { throw err; }
+                });
+
+            });
+        } else {
+            console.log('CONTACT OPTION ERROR');
+        }
+
+
+    }
+
+    _getContactOption = (contactOption) => {
+        this.setState({ contactOption });
     }
 
 
-
-    /* <FlatList
-        data={this.state.contacts}
-        renderItem={({ item }) => (
-            <View>
-                <Text >
-                    Name: {`${item.givenName} `} Surname: {item.familyName}
-                </Text>
-                {item.phoneNumbers.map(phone => (
-                    <Text >{phone.label} : {phone.number}</Text>
-                ))}
-            </View>
-        )}
-        //Setting the number of column
-        numColumns={1}
-        keyExtractor={(item, index) => index}
-    /> */
-
-
     render() {
+
         return (
-            <View >
-                <View style={styles.henloContainer}>
-                    <Text style={styles.henlo}>
-                        Henlo,
-                    </Text>
-                    <Text style={styles.henloText}>
-                        Batch me contacts add karlo fren
-                    </Text>
+            <View style={styles.container} >
+
+                <Header />
+
+                <View style={styles.mainContainer}>
+
+                    <CheckBoxSwitch onChange={this._getContactOption} />
+
+                    <TextInput
+                        style={styles.addContactText}
+                        onChangeText={this._changeContactsText}
+                        placeholder={'Enter one phone number per line'}
+                        value={this.state.contactNumbers}
+                        multiline={true}
+                    />
+
+                    <TouchableOpacity
+                        style={styles.buttonStyle}
+                        onPress={this._addContactsPressed}
+                        color="#000000"
+                    >
+
+                        <Text
+                            style={styles.buttonTextStyle}
+                        >ADD CONTACTS LMAO</Text>
+                    </TouchableOpacity>
+
+                    <Footer />
+
                 </View>
 
-                <TextInput
-                    style={styles.addContactText}
-                    onChangeText={this._changeContactsText}
-                    placeholder={'Enter one phone number per line'}
-                    value={this.state.contactNumbers}
-                    multiline={true}
-                // keyboardType={"numeric"}
-                />
-                <TouchableOpacity
-                    style={styles.buttonStyle}
-                    onPress={this._addContactsPressed}
-                    color="#000000"
-                >
-
-                    <Text
-                        style={styles.buttonTextStyle}
-                    >ADD CONTACTS LMAO</Text>
-                </TouchableOpacity>
-                <View style={styles.madeByContainer}>
-
-                    <Text
-                        style={styles.madeByText}
-                    >Made by yours truly</Text>
-                    <Text
-                        style={styles.madeByText}
-                    >Neil Agarwal</Text>
-                </View>
             </View>
         );
     }
@@ -139,18 +143,19 @@ export default class Main extends React.Component {
 
 
 const styles = StyleSheet.create({
+    container: {
+        marginHorizontal: 30,
+    },
     addContactText: {
         borderWidth: 3,
         borderColor: 'black',
         marginVertical: 24,
-        marginHorizontal: 36,
         padding: 16,
         fontSize: 20,
         borderRadius: 0,
     },
     buttonStyle: {
         backgroundColor: 'black',
-        marginHorizontal: 36,
         padding: 12,
         justifyContent: 'center',
         alignItems: 'center',
@@ -160,23 +165,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '700',
     },
-    madeByContainer: {
-        marginTop: 30,
-        alignItems: 'center',
-    },
-    madeByText: {
 
+    checkboxContainer: {
+        borderColor: 'black',
+        borderWidth: 3,
+        width: 28,
+        height: 28,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    henloContainer: {
-        marginHorizontal: 30,
-        marginTop: 30,
-        marginBottom: 20,
-    },
-    henlo: {
-        fontSize: 40,
-        fontWeight: '600',
-    },
-    henloText: {
-        fontSize: 20,
+    checkedView: {
+        backgroundColor: 'black',
+        width: 14,
+        height: 14,
     },
 });
