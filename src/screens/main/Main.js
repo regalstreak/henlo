@@ -111,6 +111,16 @@ export default class Main extends React.Component {
 
                 <View style={styles.mainContainer}>
 
+
+                    <View
+                        style={styles.groupText}
+                    >
+                        <Text>
+                            Group Settings
+                        </Text>
+
+                    </View>
+
                     <CheckBoxSwitch onChange={this._getContactOption} />
 
                     <TextInput
@@ -152,6 +162,14 @@ const styles = StyleSheet.create({
         marginVertical: 24,
         padding: 16,
         fontSize: 20,
+        borderRadius: 0,
+    },
+    groupText: {
+        borderWidth: 3,
+        borderColor: 'black',
+        marginBottom: 24,
+        padding: 8,
+        fontSize: 16,
         borderRadius: 0,
     },
     buttonStyle: {
