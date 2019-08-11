@@ -31,7 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
       // example:
       // packages.add(new MyReactNativePackage());
 
-      packages.add(new ReactNativeContacts());
+      // packages.add(new ReactNativeContacts());
       
       return packages;
     }
