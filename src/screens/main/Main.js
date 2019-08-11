@@ -8,6 +8,7 @@ import Contacts from 'react-native-contacts';
 import Footer from '../../library/components/Footer';
 import Header from '../../library/components/Header';
 import CheckBoxSwitch from '../../library/components/CheckBoxSwitch';
+import GroupPicker from '../../library/components/GroupPicker';
 
 export default class Main extends React.Component {
 
@@ -112,14 +113,8 @@ export default class Main extends React.Component {
                 <View style={styles.mainContainer}>
 
 
-                    <View
-                        style={styles.groupText}
-                    >
-                        <Text>
-                            Group Settings
-                        </Text>
-
-                    </View>
+                    <GroupPicker>
+                    </GroupPicker>
 
                     <CheckBoxSwitch onChange={this._getContactOption} />
 
@@ -164,14 +159,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         borderRadius: 0,
     },
-    groupText: {
-        borderWidth: 3,
-        borderColor: 'black',
-        marginBottom: 24,
-        padding: 8,
-        fontSize: 16,
-        borderRadius: 0,
-    },
+
     buttonStyle: {
         backgroundColor: 'black',
         padding: 12,
