@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, TextInput, FlatList, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, TextInput, FlatList } from 'react-native';
 
 export default class GroupPicker extends React.Component {
 
@@ -14,6 +14,10 @@ export default class GroupPicker extends React.Component {
     }
 
     _handleTouchable = (whichFeedback) => {
+        if (this.props.getPrefix) {
+            this.props.getPrefix(this.state.selectText);
+        }
+
         this.setState({ textInputStatus: whichFeedback });
     }
 
@@ -58,9 +62,11 @@ export default class GroupPicker extends React.Component {
         return (
             <View>
                 <TextInput
+                    maxLength={12}
                     onFocus={() => this._handleTouchable('focus')}
                     onKeyPress={() => this._handleTouchable('focus')}
                     onEndEditing={() => this._handleTouchable('blur')}
+                    placeholder={'Enter your group prefix'}
                     style={styles.textInput}
                     value={this.state.selectText}
                     onChangeText={(text) => { this._handleTextChange(text); }}
@@ -76,7 +82,7 @@ const styles = StyleSheet.create({
     container: {
     },
     textInput: {
-        borderWidth: 3,
+        borderWidth: 1.6,
         borderColor: 'black',
         marginTop: 12,
         padding: 16,
@@ -85,7 +91,7 @@ const styles = StyleSheet.create({
     },
     flatList: {
         borderTopWidth: 0,
-        borderWidth: 3,
+        borderWidth: 1.6,
         borderColor: 'black',
         fontSize: 20,
         borderRadius: 0,
