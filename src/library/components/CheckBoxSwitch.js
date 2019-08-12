@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginTop: 12,
     },
     optionContainer: {
         flexDirection: 'row',

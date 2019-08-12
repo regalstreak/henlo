@@ -1,32 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, TextInput, FlatList } from 'react-native';
-
-
-class MyListItem extends React.PureComponent {
-    _onPress = () => {
-        this.props.onPressItem(this.props.id);
-    };
-
-    render() {
-        const textColor = this.props.selected ? 'red' : 'black';
-        return (
-            <TouchableOpacity onPress={this._onPress}>
-                <View>
-                    <Text style={{ color: textColor }}>{this.props.title}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-}
-
-
+import { TouchableOpacity, Text, View, StyleSheet, TextInput, FlatList, ScrollView } from 'react-native';
 
 export default class GroupPicker extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            active: false,
+            textInputStatus: false,
             selects: [{ key: 'asdsa' }, { key: 'asdasfdsfsa' }, { key: 'asdasa' }, { key: 'bssdsadg' }],
             filteredSelects: [{ key: 'asdsa' }, { key: 'asdasfdsfsa' }, { key: 'asdasa' }, { key: 'bssdsadg' }],
             selectText: '',
@@ -34,19 +14,7 @@ export default class GroupPicker extends React.Component {
     }
 
     _handleTouchable = (whichFeedback) => {
-        switch (whichFeedback) {
-            case 'active': {
-                this.setState({ active: true });
-                break;
-            }
-            case 'blur': {
-                this.setState({ active: false });
-                break;
-            }
-            default: {
-                break;
-            }
-        }
+        this.setState({ textInputStatus: whichFeedback });
     }
 
     _handleTextChange = (text) => {
@@ -58,15 +26,12 @@ export default class GroupPicker extends React.Component {
     }
 
     _onPressItem = (item) => {
-        console.log('asdasdas');
-        this.setState({ selectText: item });
-        console.log('asdasdas', item);
-        this._handleTouchable('blur');
+        this.setState({ selectText: item }, this._handleTouchable('blur'));
     };
 
     _renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => this._onPressItem(item.key)}>
-            <View style={{padding: 20}}>
+            <View style={{ padding: 20 }}>
                 <Text>{item.key}</Text>
             </View>
         </TouchableOpacity>
@@ -75,13 +40,13 @@ export default class GroupPicker extends React.Component {
 
     render() {
         let dropdown;
-        if (this.state.active) {
+        if (this.state.textInputStatus === 'focus') {
             dropdown =
                 <View
                     style={styles.flatList}
                 >
-
                     <FlatList
+                        keyboardShouldPersistTaps={'handled'}
                         data={this.state.filteredSelects}
                         renderItem={this._renderItem}
                     />
@@ -90,14 +55,12 @@ export default class GroupPicker extends React.Component {
             dropdown = null;
         }
 
-
-
-
         return (
-            <View style={styles.container} >
+            <View>
                 <TextInput
-                    onFocus={() => this._handleTouchable('active')}
-                    // onBlur={() => this._handleTouchable('blur')}
+                    onFocus={() => this._handleTouchable('focus')}
+                    onKeyPress={() => this._handleTouchable('focus')}
+                    onEndEditing={() => this._handleTouchable('blur')}
                     style={styles.textInput}
                     value={this.state.selectText}
                     onChangeText={(text) => { this._handleTextChange(text); }}
@@ -126,6 +89,8 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         fontSize: 20,
         borderRadius: 0,
-        zIndex: 100,
+        zIndex: 5,
+        // marginBottom: 12,
+
     },
 });
