@@ -7,8 +7,8 @@ export default class GroupPicker extends React.Component {
         super(props);
         this.state = {
             textInputStatus: false,
-            selects: [{ key: 'asdsa' }, { key: 'asdasfdsfsa' }, { key: 'asdasa' }, { key: 'bssdsadg' }],
-            filteredSelects: [{ key: 'asdsa' }, { key: 'asdasfdsfsa' }, { key: 'asdasa' }, { key: 'bssdsadg' }],
+            selects: ['asdas', 'basdas', 'cdsdf', 'dsafas'],
+            filteredSelects: ['asdas', 'basdas', 'cdsdf', 'dsafas'],
             selectText: '',
         };
     }
@@ -24,9 +24,13 @@ export default class GroupPicker extends React.Component {
     _handleTextChange = (text) => {
         this.setState({ selectText: text });
         let found = this.state.selects.filter((element) => {
-            return element.key.toLowerCase().includes(text.toLowerCase());
+            return element.toLowerCase().includes(text.toLowerCase());
         });
         this.setState({ filteredSelects: found });
+
+        // if (!found.includes(text)) {
+        //     this.setState({ selects: this.state.selects.concat(text) });
+        // }
     }
 
     _onPressItem = (item) => {
@@ -34,9 +38,9 @@ export default class GroupPicker extends React.Component {
     };
 
     _renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => this._onPressItem(item.key)}>
+        <TouchableOpacity onPress={() => this._onPressItem(item)}>
             <View style={{ padding: 20 }}>
-                <Text>{item.key}</Text>
+                <Text>{item}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -53,6 +57,7 @@ export default class GroupPicker extends React.Component {
                         keyboardShouldPersistTaps={'handled'}
                         data={this.state.filteredSelects}
                         renderItem={this._renderItem}
+                        keyExtractor={(item, index) => index.toString()}
                     />
                 </View>;
         } else {
