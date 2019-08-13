@@ -5,12 +5,16 @@ import {
 
 import Contacts from 'react-native-contacts';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addPrefix } from "../../library/store/actions";
+
 import Footer from '../../library/components/Footer';
 import Header from '../../library/components/Header';
 import CheckBoxSwitch from '../../library/components/CheckBoxSwitch';
 import GroupPicker from '../../library/components/GroupPicker';
 
-export default class Main extends React.Component {
+class Main extends React.Component {
 
     constructor(props) {
         super(props);
@@ -123,6 +127,9 @@ export default class Main extends React.Component {
                     this.setState({ listContacts: contacts });
                 }
             });
+        }).then(() => {
+            this.props.addPrefix(this.state.prefix);
+            console.log(this.props.main.prefixes)
         });
     }
 
@@ -160,7 +167,7 @@ export default class Main extends React.Component {
                 <View>
                     <View style={styles.renderContactContainer}>
                         <View style={styles.renderContactNameContainer}>
-                            <Text style={styles.renderContactName}>{item.givenName.slice(0,15)}</Text>
+                            <Text style={styles.renderContactName}>{item.givenName.slice(0, 15)}</Text>
                         </View>
                         <View>
                             <Text style={styles.renderContactNumber}>{item.phoneNumbers[0].number}</Text>
@@ -314,3 +321,17 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
+
+
+const mapStateToProps = (state) => {
+    const { main } = state;
+    return { main };
+};
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        addPrefix,
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

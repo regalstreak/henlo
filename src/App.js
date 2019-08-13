@@ -1,31 +1,27 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
+import { View } from 'react-native';
 
 import Main from './screens/main/Main.js';
 
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import main from './library/store/reducers';
+
+const store = createStore(main);
+
 const App = () => {
   return (
-    <View>
-      <Main />
-    </View>
+    <Provider store={store}>
+      <View>
+        <Main />
+      </View>
+    </Provider>
   );
 };
 
+export default App;
+
+/*
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
@@ -64,5 +60,4 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
-
-export default App;
+*/

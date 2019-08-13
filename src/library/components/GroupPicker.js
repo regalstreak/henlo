@@ -1,17 +1,23 @@
 import React from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, TextInput, FlatList } from 'react-native';
 
-export default class GroupPicker extends React.Component {
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addPrefix } from '../store/actions';
+
+class GroupPicker extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             textInputStatus: false,
-            selects: ['asdas', 'basdas', 'cdsdf', 'dsafas'],
-            filteredSelects: ['asdas', 'basdas', 'cdsdf', 'dsafas'],
+            filteredSelects: [],
             selectText: '',
         };
+
+        this.state.filteredSelects = this.props.main.prefixes;
     }
+
 
     _handleTouchable = (whichFeedback) => {
         if (this.props.getPrefix) {
@@ -23,10 +29,13 @@ export default class GroupPicker extends React.Component {
 
     _handleTextChange = (text) => {
         this.setState({ selectText: text });
-        let found = this.state.selects.filter((element) => {
-            return element.toLowerCase().includes(text.toLowerCase());
-        });
-        this.setState({ filteredSelects: found });
+        let reduxPrefixes = this.props.main.prefixes;
+        if (reduxPrefixes.length > 0) {
+            let found = reduxPrefixes.filter((element) => {
+                return element.toLowerCase().includes(text.toLowerCase());
+            });
+            this.setState({ filteredSelects: found });
+        }
 
         // if (!found.includes(text)) {
         //     this.setState({ selects: this.state.selects.concat(text) });
@@ -105,3 +114,17 @@ const styles = StyleSheet.create({
 
     },
 });
+
+
+const mapStateToProps = (state) => {
+    const { main } = state;
+    return { main };
+};
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        addPrefix,
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(GroupPicker);
